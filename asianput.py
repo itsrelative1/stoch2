@@ -3,7 +3,16 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
-def path(s0, sigma, r, T, m):
+def path(s0, sigma, r, T, m) -> np.array:
+    """
+    Generates the stock path with geometric brownian motion using the Euler method
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Interest free rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: A list of stock prices where the time of each price is spaced by dt
+    """
     path = np.zeros(m + 1)
     path[0] = s0
     dt = T / m
@@ -15,7 +24,16 @@ def path(s0, sigma, r, T, m):
     return path
 
 
-def I(s0, sigma, r, T, m):
+def I(s0, sigma, r, T, m) -> float:
+    """
+    Calculates the average of the stock path
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Interest free rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: The value of It, e.i. the geometric average of the stock path
+    """
     St = path(s0, sigma, r, T, m)
     inner_sum = 0
     dt = T / m
@@ -26,11 +44,28 @@ def I(s0, sigma, r, T, m):
     return inner_sum / T
 
 
-def payoff(K, I):
+def payoff(K, I) -> float:
+    """
+    Calculates the payoff with strike price K and geometric average I
+    :param K: Strike price
+    :param I: Geometric average
+    :return: K-I if positive, else 0
+    """
     return max(0, K - I)
 
 
-def simulate(n, K, s0, sigma, r, T, m):
+def simulate(n, K, s0, sigma, r, T, m) -> tuple:
+    """
+    Simulate n payoffs at t=0 by generating n paths and calculating the payoff at time T and discounting back
+    :param n: Number of monte carlo simulations
+    :param K: Strike price
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Interest free rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: Mean, std and confidence interval of the asian option price
+    """
     payoffs = []
 
     for i in tqdm(range(n)):

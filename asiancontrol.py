@@ -3,7 +3,16 @@ import matplotlib.pyplot as plt
 from asianput import payoff, path
 
 
-def I(s0, sigma, r, T, m):
+def I(s0, sigma, r, T, m) -> tuple:
+    """
+    Calculates the average of the stock path
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Interest free rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: It and also S_0, S_0.5 and S_T to calculate HT for the control variate
+    """
     St = path(s0, sigma, r, T, m)
     inner_sum = 0
     dt = T / m
