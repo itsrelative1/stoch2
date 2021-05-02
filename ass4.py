@@ -2,11 +2,11 @@ import concurrent.futures
 import numpy as np
 from scipy.stats import norm
 
-T = 10
-# r = -0.0027*T
-r = -0.0027
-# sigma = 0.21*np.sqrt(T)
-sigma = 0.21
+T = 1
+r = -0.0027*10
+# r = -0.0027
+sigma = 0.21*np.sqrt(10)
+# sigma = 0.21
 s0 = 715
 K = 715
 n = 2
@@ -70,4 +70,4 @@ if __name__ == "__main__":
 
     print(OptionPrice, stderr, conf_interval)
     print(Theoretical(s0, K, T, sigma, r))
-    print(analytical(K, s0, sigma, r, T))
+    # print(analytical(K, s0, sigma, r, T))

@@ -80,7 +80,12 @@ def simulate(n, K, s0, sigma, r, T, m) -> tuple:
     return G_0_mean, G_0_std, confidence
 
 
-G_0_mean, G_0_std, confidence = simulate(10000, 100, 100, 0.2, 0.06, 1, 100)
+if __name__ == "__main__":
 
-print("G0_mean=", G_0_mean, "G0_std =", G_0_std)
-print("Confidence interval G_0 of 95%:", confidence)
+    G_0_mean, G_0_std, confidence = simulate(10000, 715, 715, 0.21, -0.0027, 10, 2)
+
+    print("G0_mean=", G_0_mean, "G0_std =", G_0_std)
+    print("Confidence interval G_0 of 95%:", confidence)
+
+    # plt.plot(path(715, 0.21, -0.0027, 10, 100))
+    # plt.show()
