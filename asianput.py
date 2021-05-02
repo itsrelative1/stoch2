@@ -68,7 +68,7 @@ def simulate(n, K, s0, sigma, r, T, m) -> tuple:
     """
     payoffs = []
 
-    for i in tqdm(range(n)):
+    for i in range(n):
         I_T = I(s0, sigma, r, T, m)
         payoffs.append(payoff(K, I_T))
 
@@ -80,6 +80,22 @@ def simulate(n, K, s0, sigma, r, T, m) -> tuple:
     return G_0_mean, G_0_std, confidence
 
 
+def simulate2(K, s0, sigma, r, T, m):
+
+    N_list = np.arange(100, 10600, 500)
+    G_new_list = []
+    G_0_std_list = []
+    confidence_list = []
+
+    for N in tqdm(N_list):
+        G_new, G_0_std, confidence = simulate(N, K, s0, sigma, r, T, m)
+        G_new_list.append(G_new)
+        G_0_std_list.append(G_0_std)
+        confidence_list.append(confidence)
+
+    return G_new_list, G_0_std_list, confidence_list
+
+
 if __name__ == "__main__":
 
     G_0_mean, G_0_std, confidence = simulate(10000, 715, 715, 0.21, -0.0027, 10, 100)
@@ -88,4 +104,21 @@ if __name__ == "__main__":
     print("Confidence interval G_0 of 95%:", confidence)
 
     # plt.plot(path(715, 0.21, -0.0027, 10, 100))
+    # plt.show()
+
+    # x = np.arange(100, 10600, 500)
+    # G_new_list, G_0_std_list, confidence_list = simulate2(
+    #     715, 715, 0.21, -0.0027, 10, 100
+    # )
+    # plt.fill_between(
+    #     x,
+    #     np.array(G_new_list) - np.array(G_0_std_list),
+    #     np.array(G_new_list) + np.array(G_0_std_list),
+    #     alpha=0.2,
+    # )
+    # plt.title("Monte Carlo estimate", fontsize=24)
+    # plt.plot(x, G_new_list, label="G_0 estimate")
+    # plt.xlabel("Sample size", fontsize=24)
+    # plt.ylabel("Option value", fontsize=24)
+    # plt.legend(fontsize=20)
     # plt.show()

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from asianput import payoff, path
 from scipy.stats import norm
 from scipy.stats.mstats import gmean
+from tqdm import tqdm
 
 
 def I(s0, sigma, r, T, m) -> tuple:
@@ -82,7 +83,39 @@ def simulate(n, K, s0, sigma, r, T, m):
     return G_new, G_0_std, confidence
 
 
+def simulate2(K, s0, sigma, r, T, m):
+
+    N_list = np.arange(100, 10600, 500)
+    G_new_list = []
+    G_0_std_list = []
+    confidence_list = []
+
+    for N in tqdm(N_list):
+        G_new, G_0_std, confidence = simulate(N, K, s0, sigma, r, T, m)
+        G_new_list.append(G_new)
+        G_0_std_list.append(G_0_std)
+        confidence_list.append(confidence)
+
+    return G_new_list, G_0_std_list, confidence_list
+
+
 g = simulate(10000, 715, 715, 0.21, -0.0027, 10, 100)
 print("G0_mean=", g[0], "G0_std=", g[1])
 print("Confidence interval G_0 of 95%", g[2])
 
+# x = np.arange(100, 10600, 500)
+# G_new_list, G_0_std_list, confidence_list = simulate2(715, 715, 0.21, -0.0027, 10, 100)
+
+# plt.fill_between(
+#     x,
+#     np.array(G_new_list) - np.array(G_0_std_list),
+#     np.array(G_new_list) + np.array(G_0_std_list),
+#     alpha=0.2,
+# )
+# plt.title("Control variate estimate", fontsize=24)
+# plt.ylim(70, 120)
+# plt.plot(x, G_new_list, label="G_0 Control Variate")
+# plt.xlabel("Sample size", fontsize=24)
+# plt.ylabel("Option value", fontsize=24)
+# plt.legend(fontsize=20)
+# plt.show()
