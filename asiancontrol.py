@@ -5,7 +5,6 @@ from scipy.stats import norm
 from scipy.stats.mstats import gmean
 from tqdm import tqdm
 
-
 def I(s0, sigma, r, T, m) -> tuple:
     """
     Calculates the average of the stock path
@@ -102,6 +101,7 @@ def simulate2(K, s0, sigma, r, T, m):
 g = simulate(10000, 715, 715, 0.21, -0.0027, 10, 100)
 print("G0_mean=", g[0], "G0_std=", g[1])
 print("Confidence interval G_0 of 95%", g[2])
+<<<<<<< HEAD
 
 # x = np.arange(100, 10600, 500)
 # G_new_list, G_0_std_list, confidence_list = simulate2(715, 715, 0.21, -0.0027, 10, 100)
@@ -119,3 +119,5 @@ print("Confidence interval G_0 of 95%", g[2])
 # plt.ylabel("Option value", fontsize=24)
 # plt.legend(fontsize=20)
 # plt.show()
+=======
+>>>>>>> f39f003306f86357317411b1e274623b744bcaa2

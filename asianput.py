@@ -98,7 +98,7 @@ def simulate2(K, s0, sigma, r, T, m):
 
 if __name__ == "__main__":
 
-    G_0_mean, G_0_std, confidence = simulate(10000, 715, 715, 0.21, -0.0027, 10, 100)
+    G_0_mean, G_0_std, confidence = simulate(10000, 715, 715, 0.21, -0.0027, 10, 2)
 
     print("G0_mean=", G_0_mean, "G0_std =", G_0_std)
     print("Confidence interval G_0 of 95%:", confidence)
