@@ -84,4 +84,3 @@ G_0_mean, G_0_std, confidence = simulate(10000, 100, 100, 0.2, 0.06, 1, 100)
 
 print("G0_mean=", G_0_mean, "G0_std =", G_0_std)
 print("Confidence interval G_0 of 95%:", confidence)
-
