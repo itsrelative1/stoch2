@@ -1,6 +1,7 @@
 import concurrent.futures
 import numpy as np
 from scipy.stats import norm
+from scipy.stats.mstats import gmean
 
 T = 1
 r = -0.0027*10
@@ -27,7 +28,8 @@ def StockPrice(s0, T, sigma, r, n):
 
     # calculates geom abverage
     product = np.prod(prices)
-    geom_avg = product**(1/3)
+    # geom_avg = product**(1/3)
+    geom_avg = gmean(prices)
 
     return geom_avg
 
