@@ -8,7 +8,7 @@ def path(s0, sigma, r, T, m) -> np.array:
     Generates the stock path with geometric brownian motion using the Euler method
     :param s0: The initial stockprice
     :param sigma: The volatility
-    :param r: Interest free rate
+    :param r: Risk free interest rate
     :param T: Time t=T in the future
     :param m: Number of points in the stock path
     :return: A list of stock prices where the time of each price is spaced by dt
@@ -29,7 +29,7 @@ def I(s0, sigma, r, T, m) -> float:
     Calculates the average of the stock path
     :param s0: The initial stockprice
     :param sigma: The volatility
-    :param r: Interest free rate
+    :param r: Risk free interest rate
     :param T: Time t=T in the future
     :param m: Number of points in the stock path
     :return: The value of It, e.i. the geometric average of the stock path
@@ -61,7 +61,7 @@ def simulate(n, K, s0, sigma, r, T, m) -> tuple:
     :param K: Strike price
     :param s0: The initial stockprice
     :param sigma: The volatility
-    :param r: Interest free rate
+    :param r: Risk free interest rate
     :param T: Time t=T in the future
     :param m: Number of points in the stock path
     :return: Mean, std and confidence interval of the asian option price
@@ -80,7 +80,17 @@ def simulate(n, K, s0, sigma, r, T, m) -> tuple:
     return G_0_mean, G_0_std, confidence
 
 
-def simulate2(K, s0, sigma, r, T, m):
+def simulate2(K, s0, sigma, r, T, m) -> tuple:
+    """
+    Simulates the option value as a function of sample size
+    :param K: Strike price
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Risk free interest rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: Tuple of option estimation, std and confidence
+    """
 
     N_list = np.arange(100, 10600, 500)
     G_new_list = []
@@ -98,27 +108,26 @@ def simulate2(K, s0, sigma, r, T, m):
 
 if __name__ == "__main__":
 
-    G_0_mean, G_0_std, confidence = simulate(10000, 715, 715, 0.21, -0.0027, 10, 2)
+    # Simulates 10^4 paths for the option value at t=0
+    G_0_mean, G_0_std, confidence = simulate(10000, 715, 715, 0.21, -0.0027, 10, 100)
 
     print("G0_mean=", G_0_mean, "G0_std =", G_0_std)
     print("Confidence interval G_0 of 95%:", confidence)
 
-    # plt.plot(path(715, 0.21, -0.0027, 10, 100))
-    # plt.show()
-
-    # x = np.arange(100, 10600, 500)
-    # G_new_list, G_0_std_list, confidence_list = simulate2(
-    #     715, 715, 0.21, -0.0027, 10, 100
-    # )
-    # plt.fill_between(
-    #     x,
-    #     np.array(G_new_list) - np.array(G_0_std_list),
-    #     np.array(G_new_list) + np.array(G_0_std_list),
-    #     alpha=0.2,
-    # )
-    # plt.title("Monte Carlo estimate", fontsize=24)
-    # plt.plot(x, G_new_list, label="G_0 estimate")
-    # plt.xlabel("Sample size", fontsize=24)
-    # plt.ylabel("Option value", fontsize=24)
-    # plt.legend(fontsize=20)
-    # plt.show()
+    # Plots the option value as a function of sample size
+    x = np.arange(100, 10600, 500)
+    G_new_list, G_0_std_list, confidence_list = simulate2(
+        715, 715, 0.21, -0.0027, 10, 100
+    )
+    plt.fill_between(
+        x,
+        np.array(G_new_list) - np.array(G_0_std_list),
+        np.array(G_new_list) + np.array(G_0_std_list),
+        alpha=0.2,
+    )
+    plt.title("Monte Carlo estimate", fontsize=24)
+    plt.plot(x, G_new_list, label="G_0 estimate")
+    plt.xlabel("Sample size", fontsize=24)
+    plt.ylabel("Option value", fontsize=24)
+    plt.legend(fontsize=20)
+    plt.show()

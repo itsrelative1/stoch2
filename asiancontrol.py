@@ -5,12 +5,13 @@ from scipy.stats import norm
 from scipy.stats.mstats import gmean
 from tqdm import tqdm
 
+
 def I(s0, sigma, r, T, m) -> tuple:
     """
     Calculates the average of the stock path
     :param s0: The initial stockprice
     :param sigma: The volatility
-    :param r: Interest free rate
+    :param r: Risk free interest rate
     :param T: Time t=T in the future
     :param m: Number of points in the stock path
     :return: It and also S_0, S_0.5 and S_T to calculate HT for the control variate
@@ -27,21 +28,16 @@ def I(s0, sigma, r, T, m) -> tuple:
     return mean, St[0], St[round(len(St) / 2)], St[-1], inner_sum / T
 
 
-# def analytical(K, s0, sigma, r, T):
-#     d1 = (np.log(s0 / K) + T * ((r / 2 - sigma ** 2 / 4) + 5 / 36 * sigma ** 2)) / (
-#         np.sqrt(T) * sigma * np.sqrt(5 / 18)
-#     )
-
-#     d2 = (np.log(s0 / K) + T * (r / 2 - sigma ** 2 / 4)) / (
-#         np.sqrt(T) * sigma * np.sqrt(5 / 18)
-#     )
-
-#     return np.exp(-r * T) * (
-#         K * norm.cdf(-d2) - s0 * norm.cdf(-d1) * np.exp(T * (r / 2 - sigma ** 2 / 4))
-#     )
-
-
-def analytical(K, s0, sigma, r, T):
+def analytical(K, s0, sigma, r, T) -> float:
+    """
+    Analytical solution of the 3 point geometric asian put option
+    :param K: Strike price
+    :param s0: Initial stock price
+    :param sigma: volatility
+    :param r: Risk free interest rate
+    :param T: The end time t=T
+    :return: option value
+    """
     a = r / 2 - (sigma ** 2) / 4
     b = np.sqrt(5 / 18) * sigma
 
@@ -55,7 +51,19 @@ def analytical(K, s0, sigma, r, T):
     return C
 
 
-def simulate(n, K, s0, sigma, r, T, m):
+def simulate(n, K, s0, sigma, r, T, m) -> tuple:
+    """
+    Simulate n payoffs at t=0 by generating n paths and calculating the payoff at time T and discounting back
+    These payoffs are modified with a control variate
+    :param n: Number of monte carlo simulations
+    :param K: Strike price
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Risk free interest rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: Mean, std and confidence interval of the asian option price with control variate
+    """
     G_T_list = []
     C_T_list = []
 
@@ -83,6 +91,16 @@ def simulate(n, K, s0, sigma, r, T, m):
 
 
 def simulate2(K, s0, sigma, r, T, m):
+    """
+    Simulates the option value as a function of sample size
+    :param K: Strike price
+    :param s0: The initial stockprice
+    :param sigma: The volatility
+    :param r: Risk free interest rate
+    :param T: Time t=T in the future
+    :param m: Number of points in the stock path
+    :return: Tuple of option estimation, std and confidence
+    """
 
     N_list = np.arange(100, 10600, 500)
     G_new_list = []
@@ -98,26 +116,25 @@ def simulate2(K, s0, sigma, r, T, m):
     return G_new_list, G_0_std_list, confidence_list
 
 
+# Simulates 10^4 paths to calculate the average option price at t=0
 g = simulate(10000, 715, 715, 0.21, -0.0027, 10, 100)
 print("G0_mean=", g[0], "G0_std=", g[1])
 print("Confidence interval G_0 of 95%", g[2])
-<<<<<<< HEAD
 
-# x = np.arange(100, 10600, 500)
-# G_new_list, G_0_std_list, confidence_list = simulate2(715, 715, 0.21, -0.0027, 10, 100)
+# Plots the option price as a function of sample size
+x = np.arange(100, 10600, 500)
+G_new_list, G_0_std_list, confidence_list = simulate2(715, 715, 0.21, -0.0027, 10, 100)
 
-# plt.fill_between(
-#     x,
-#     np.array(G_new_list) - np.array(G_0_std_list),
-#     np.array(G_new_list) + np.array(G_0_std_list),
-#     alpha=0.2,
-# )
-# plt.title("Control variate estimate", fontsize=24)
-# plt.ylim(70, 120)
-# plt.plot(x, G_new_list, label="G_0 Control Variate")
-# plt.xlabel("Sample size", fontsize=24)
-# plt.ylabel("Option value", fontsize=24)
-# plt.legend(fontsize=20)
-# plt.show()
-=======
->>>>>>> f39f003306f86357317411b1e274623b744bcaa2
+plt.fill_between(
+    x,
+    np.array(G_new_list) - np.array(G_0_std_list),
+    np.array(G_new_list) + np.array(G_0_std_list),
+    alpha=0.2,
+)
+plt.title("Control variate estimate", fontsize=24)
+plt.ylim(70, 120)
+plt.plot(x, G_new_list, label="G_0 Control Variate")
+plt.xlabel("Sample size", fontsize=24)
+plt.ylabel("Option value", fontsize=24)
+plt.legend(fontsize=20)
+plt.show()
